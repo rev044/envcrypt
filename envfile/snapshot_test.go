@@ -41,6 +41,20 @@ func TestSnapshotVerifyTampered(t *testing.T) {
 	}
 }
 
+func TestSnapshotVerifyTamperedKey(t *testing.T) {
+	entries := []Entry{
+		{Key: "SECRET", Value: "abc123"},
+	}
+	snap := TakeSnapshot("staging", entries)
+
+	// Tamper with an entry key after snapshot is taken.
+	snap.Entries[0].Key = "HACKED_KEY"
+
+	if snap.Verify() {
+		t.Error("expected Verify() to return false after tampering with key")
+	}
+}
+
 func TestSaveAndLoadSnapshot(t *testing.T) {
 	entries := []Entry{
 		{Key: "PORT", Value: "8080"},
