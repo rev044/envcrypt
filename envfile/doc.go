@@ -1,18 +1,24 @@
-// Package envfile provides utilities for reading, writing, and manipulating
-// .env files used by envcrypt.
+// Package envfile provides utilities for parsing, writing, merging,
+// diffing, and validating .env files.
 //
-// A .env file consists of lines in the form:
+// # Parsing
 //
-//	KEY=VALUE
+// Parse reads KEY=VALUE lines from an io.Reader, skipping blank lines
+// and comments (lines starting with '#'). It returns a slice of Entry
+// values that preserve the original order.
 //
-// Lines beginning with '#' are treated as comments and are preserved during
-// round-trip operations. Blank lines are skipped on parse.
+// # Writing
 //
-// Typical usage:
+// Write serialises a slice of Entry values back to KEY=VALUE format.
 //
-//	ef, err := envfile.Parse(".env")
-//	if err != nil { ... }
-//	m := ef.ToMap()
-//	// modify m ...
-//	if err := envfile.Write(".env.enc", envfile.FromMap(m)); err != nil { ... }
+// # Merging and Diffing
+//
+// Merge combines two sets of entries with configurable conflict
+// resolution (prefer base, prefer override, or error on conflict).
+// Diff returns the keys that differ between two entry sets.
+//
+// # Validation
+//
+// Validate inspects a slice of Entry values and reports empty keys,
+// keys with invalid characters, and duplicate keys as a ValidationResult.
 package envfile
